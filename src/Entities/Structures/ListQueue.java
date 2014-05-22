@@ -12,7 +12,7 @@ import java.util.Iterator;
  * from the queue.
  */
 public class ListQueue<E> implements ListIterates<E>{
-    private Object[] list = new Object[10];
+    private E[] list = (E[]) new Object[10];
     private int head = 0;
     private int tail = 0;
     private int current = 0;
@@ -30,7 +30,7 @@ public class ListQueue<E> implements ListIterates<E>{
 
     int counted = 0;
     private void resizeArray(int i){
-        Object[] temp = new Object[i];
+        E[] temp = (E[]) new Object[i];
         for(int j = 0; j < tail - head; j++){
             temp[j] = list[j + head];
             current = j;
@@ -69,7 +69,7 @@ public class ListQueue<E> implements ListIterates<E>{
 
     @Override
     public E peek(){
-        return (E) list[head];
+        return list[head];
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ListQueue<E> implements ListIterates<E>{
 
     @Override
     public E next(){
-        return (E) list[current++];
+        return list[current++];
     }
 
     public static void main(String[] args){

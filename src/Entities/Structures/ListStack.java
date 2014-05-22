@@ -11,7 +11,7 @@ import java.util.Iterator;
  * List and Stack in one.
  */
 public class ListStack<E> implements ListIterates<E>{
-    private Object[] list = new Object[10];
+    private E[] list = (E[]) new Object[10];
     private int last = -1;
     private int current = 0;
     private double capacity = .25;
@@ -23,7 +23,7 @@ public class ListStack<E> implements ListIterates<E>{
      */
     public void push(E item){
         if(list.length == last + 1){
-            Object[] temp = new Object[list.length * 2];
+            E[] temp = (E[]) new Object[list.length * 2];
             for(int i = 0; i < list.length; i++){
                 temp[i] = list[i];
             }
@@ -42,7 +42,7 @@ public class ListStack<E> implements ListIterates<E>{
         if(last == -1){
             return null;
         }
-        E i = (E) list[last--];
+        E i = list[last--];
         if((double)last /(double) (list.length-1) < capacity && list.length > 10){
             shrinkArray();
         }
@@ -50,7 +50,7 @@ public class ListStack<E> implements ListIterates<E>{
     }
 
     private void shrinkArray(){
-        Object[] temp = new Object[(int)Math.ceil(list.length * capacity)];
+        E[] temp = (E[]) new Object[(int)Math.ceil(list.length * capacity)];
         for(int i = 0; i <= last; i++){
             temp[i] = list[i];
         }
@@ -64,7 +64,7 @@ public class ListStack<E> implements ListIterates<E>{
      * @return the last item of the list
      */
     public E peek(){
-        return (E) list[last];
+        return list[last];
     }
 
     /**
@@ -92,7 +92,7 @@ public class ListStack<E> implements ListIterates<E>{
 
     @Override
     public E next(){
-        return (E) list[current++];
+        return list[current++];
     }
 
     public static void main(String[] args){

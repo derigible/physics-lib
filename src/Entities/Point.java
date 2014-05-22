@@ -1,5 +1,7 @@
 package Entities;
 
+import Newtonian.Kinematics.TwoD;
+
 /**
         * Created by marcphillips on 5/19/2014.
         * A basic model of a point on a 2D plain.
@@ -7,6 +9,15 @@ package Entities;
 public class Point{
     public double x;
     public double y;
+    /**
+     * Should not be changed for base class.
+     */
+    public double radius = 0;
+    /**
+     * Should not be changed for base class.
+     */
+    public double mass = 0;
+    public int collisions;
     private double velocity_x;
     private double velocity_y;
     private double accel_x;
@@ -87,6 +98,60 @@ public class Point{
 
     public void setAccel_y(double accel_y){
         this.accel_y = accel_y;
+    }
+
+    public void move(double t, double x_wall, double y_wall){
+        x = TwoD.move_x(this, t, radius, x_wall);
+        y = TwoD.move_y(this, t, radius, y_wall);
+    }
+
+    public double timeToHit(Point that){
+        if (this == that) return Double.POSITIVE_INFINITY;
+        double dx = that.x - this.x, dy = that.y - this.y;
+        double dvx = that.velocity_x - this.velocity_x, dvy = that.velocity_y - this.velocity_y;
+        double dvdr = dx*dvx + dy*dvy;
+        if( dvdr > 0) return Double.POSITIVE_INFINITY;
+        double dvdv = dvx*dvx + dvy*dvy;
+        double drdr = dx*dx + dy*dy;
+        double sigma = this.radius + that.radius;
+        double d = (dvdr*dvdr) - dvdv * (drdr - sigma*sigma);
+        if (d < 0) return Double.POSITIVE_INFINITY;
+        return -(dvdr + Math.sqrt(d)) / dvdv;
+    }
+
+    public double timeToHitVerticalWall(double wall){
+        return (wall - radius - x)/velocity_x;
+    }
+
+    public double timeToHitHorizontalWall(double wall){
+        return (wall - radius - y)/velocity_y;
+    }
+
+    public void bounceOff(Point other){
+        double dx = other.x - this.x, dy = other.y - this.y;
+        double dvx = other.getVelocity_x() - this.velocity_x;
+        double dvy = other.getVelocity_y() - this.velocity_y;
+        double dvdr = dx*dvx + dy*dvy;
+        double dist = this.radius + other.radius;
+        double J = 2 * this.mass * other.mass * dvdr / ((this.mass + other.mass) * dist);
+        double Jx = J * dx / dist;
+        double Jy = J * dy / dist;
+        this.velocity_x += Jx / this.mass;
+        this.velocity_y += Jy / this.mass;
+        other.setVelocity_x(other.getVelocity_x() - Jx / other.mass);
+        other.setVelocity_y(other.getVelocity_y() - Jy / other.mass);
+        this.collisions++;
+        other.collisions++;
+    }
+
+    public void bounceOffVertical(){
+        velocity_x = -velocity_x;
+        collisions++;
+    }
+
+    public void bounceOffHorizontal(){
+        velocity_y = -velocity_y;
+        collisions++;
     }
 
     @Override
