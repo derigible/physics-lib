@@ -10,7 +10,7 @@ import java.util.Iterator;
  * first instance off the top of the list). Thus it is a simple
  * List and Stack in one.
  */
-public class ListStack<E> implements ListIterates<E>{
+public class ListStack<E> implements Pushable<E>{
     private E[] list = (E[]) new Object[10];
     private int last = -1;
     private int current = 0;
@@ -38,7 +38,8 @@ public class ListStack<E> implements ListIterates<E>{
      *
      * @return the top item
      */
-    public E pop(){
+    @Override
+    public E pull(){
         if(last == -1){
             return null;
         }
@@ -66,6 +67,7 @@ public class ListStack<E> implements ListIterates<E>{
     public E peek(){
         return list[last];
     }
+
 
     /**
      * The size of the list.
@@ -107,7 +109,7 @@ public class ListStack<E> implements ListIterates<E>{
                 System.out.println("Length before pop should be " + (i) + ", found: " + ints.size());
                 System.out.println("Value before pop should be " + (i - 1) + " got " + ints.peek());
             }
-            int val = ints.pop();
+            int val = ints.pull();
             if(i % 20 == 0){
                 System.out.println("Value of pop should be " + (i - 1) + " got " + val);
                 System.out.println("Length after pop should be " + (i - 1) + ", found: " + ints.size());
@@ -115,7 +117,7 @@ public class ListStack<E> implements ListIterates<E>{
             }
         }
         System.out.println();
-        System.out.println("Should be null: " + ints.pop());
+        System.out.println("Should be null: " + ints.pull());
         System.out.println("Length should be 0, found: " + ints.size());
         for(int i = 0; i < 301; i++){
             ints.push(i);

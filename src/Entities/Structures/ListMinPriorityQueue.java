@@ -2,6 +2,8 @@ package Entities.Structures;
 
 import Entities.Structures.Exceptions.DeletionFromEmptyListException;
 
+import java.util.Iterator;
+
 /**
  * Created by marcphillips on 5/21/2014.
  */
@@ -46,30 +48,62 @@ public class ListMinPriorityQueue<E extends Comparable<E>> extends ListPriorityQ
         return list[i].compareTo(list[key]) > 0;
     }
 
+    @Override
+    public Iterator<E> iterator(){
+        return this;
+    }
+
+    @Override
+    public boolean hasNext(){
+        if(current == 1 && last == 0){
+            return false;
+        } else if(current > last){
+            current = 1;
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public E next(){
+        return list[current++];
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        for(E val : this){
+            sb.append(val.toString());
+            sb.append(" | ");
+        }
+        sb.delete(sb.length() - 3, sb.length() - 1);
+        return sb.toString();
+    }
+
     public static void main(String[] args){
         ListMinPriorityQueue<Integer> ints = new ListMinPriorityQueue<Integer>(50);
-        for(int i = 0; i < 300; i++){
-            ints.push(i);
-        }
-        System.out.println("Length should be 300, found: " + ints.size());
-        System.out.println();
-        for(int i = 300; i > 0; i--){
-            if(i % 20 == 0){
-                System.out.println("Length before deleteMax should be " + (i) + ", found: " + ints.size());
-                System.out.println("Value before DeleteMax should be " + (300 - i) + " got " + ints.peek());
-            }
-            int val = 0;
-            val = ints.pull();
-            if(i % 20 == 0){
-                System.out.println("Length after pull should be " + (i - 1) + ", found: " + ints.size());
-                System.out.println("Value of pull should be " + (300 - i) + " got " + val);
-                System.out.println("Peek after pull should be " + (300 - i + 1) + " got " + ints.peek());
-                System.out.println();
-            }
-        }
-        System.out.println();
-        System.out.println("Should be true: " + ints.isEmpty());
-        System.out.println("Should be null: " + ints.pull());
+//        for(int i = 0; i < 300; i++){
+//            ints.push(i);
+//        }
+//        System.out.println("Length should be 300, found: " + ints.size());
+//        System.out.println();
+//        for(int i = 300; i > 0; i--){
+//            if(i % 20 == 0){
+//                System.out.println("Length before deleteMax should be " + (i) + ", found: " + ints.size());
+//                System.out.println("Value before DeleteMax should be " + (300 - i) + " got " + ints.peek());
+//            }
+//            int val = 0;
+//            val = ints.pull();
+//            if(i % 20 == 0){
+//                System.out.println("Length after pull should be " + (i - 1) + ", found: " + ints.size());
+//                System.out.println("Value of pull should be " + (300 - i) + " got " + val);
+//                System.out.println("Peek after pull should be " + (300 - i + 1) + " got " + ints.peek());
+//                System.out.println();
+//            }
+//        }
+//        System.out.println();
+//        System.out.println("Should be true: " + ints.isEmpty());
+//        System.out.println("Should be null: " + ints.pull());
         System.out.println("Length should be 0, found: " + ints.size());
         for(int i = 0; i < 301; i++){
             ints.push(i);

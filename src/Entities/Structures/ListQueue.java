@@ -11,7 +11,7 @@ import java.util.Iterator;
  * placed in the list and returns it with removal
  * from the queue.
  */
-public class ListQueue<E> implements ListIterates<E>{
+public class ListQueue<E> implements Pushable<E>{
     private E[] list = (E[]) new Object[10];
     private int head = 0;
     private int tail = 0;

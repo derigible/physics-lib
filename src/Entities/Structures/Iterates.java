@@ -7,7 +7,9 @@ import java.util.Iterator;
  */
 public interface Iterates<E> extends Iterable<E>, Iterator<E>{
 
-    abstract void push(E item);
+    abstract int size();
+
+    //TODO consider making a setminsize and setcapacity function
 
     /**
      * Always grabs the item that is about to be removed from the Iterates
@@ -17,4 +19,6 @@ public interface Iterates<E> extends Iterable<E>, Iterator<E>{
      * @return
      */
     abstract E peek();
+
+    abstract E pull();
 }

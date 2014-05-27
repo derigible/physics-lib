@@ -8,9 +8,10 @@ import java.util.Iterator;
  * Created by marcphillips on 5/21/2014.
  */
 
-public class ListPriorityQueue<E extends Comparable<E>> implements ListIterates<E>{
+public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
 
     protected E[] list = null;
+    private E[] sorted = null;
     protected int last = 0;
     protected int current = 1;
 
@@ -26,12 +27,7 @@ public class ListPriorityQueue<E extends Comparable<E>> implements ListIterates<
         list = given;
     }
 
-    /**
-     * Pull off the top value of this priority queue.
-     *
-     * @return the maximum value of the queue
-     * @throws DeletionFromEmptyListException
-     */
+    @Override
     public E pull(){
         if(last == 0){
             return null;
@@ -90,6 +86,41 @@ public class ListPriorityQueue<E extends Comparable<E>> implements ListIterates<
         return last == 0;
     }
 
+    private Comparable[] sort(Comparable[] vals, int last){
+        for(int i = last/2; i >= 1; i--){
+            sinkSort(vals, i, last);
+        }
+        while(last > 1){
+            exchSort(vals, 1, last);
+            sinkSort(vals, 1, --last);
+        }
+        return vals;
+    }
+
+    private boolean lessSort(Comparable[] vals, int i, int j){
+        return vals[j].compareTo(vals[i]) < 0;
+    }
+
+    private void exchSort(Comparable[] vals, int key, int length){
+        Comparable temp = vals[length];
+        vals[length] = vals[key];
+        vals[key] = temp;
+    }
+
+    private void sinkSort(Comparable[] vals, int key, int length){
+        while(2*key <= length){
+            int j = 2*key;
+            if(j < length && lessSort(vals, j, j + 1)){
+                j++;
+            }
+            if(!lessSort(vals, key, j)){
+                break;
+            }
+            exchSort(vals, key, j);
+            key = j;
+        }
+    }
+
     @Override
     public int size(){
         return last;
@@ -118,6 +149,7 @@ public class ListPriorityQueue<E extends Comparable<E>> implements ListIterates<
      */
     @Override
     public Iterator<E> iterator(){
+        sorted = (E[]) sort(this.list.clone(), last);
         return this;
     }
 
@@ -134,7 +166,18 @@ public class ListPriorityQueue<E extends Comparable<E>> implements ListIterates<
 
     @Override
     public E next(){
-        return list[current++];
+        return sorted[current++];
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        for(E val : this){
+            sb.append(val.toString());
+            sb.append(" | ");
+        }
+        sb.delete(sb.length() - 3, sb.length() - 1);
+        return sb.toString();
     }
 
     public static void main(String[] args){
@@ -165,13 +208,13 @@ public class ListPriorityQueue<E extends Comparable<E>> implements ListIterates<
         for(int i = 0; i < 301; i++){
             ints.push(i);
         }
-        System.out.println("Value should be 0, got "+ ints.peek());
-        int count = 0;
+        System.out.println("Value should be 300, got "+ ints.peek());
+        int count = 300;
         for(Integer i : ints){
             if(count %20 == 0){
                 System.out.println("Value should be " + count + " got " + i);
             }
-            count++;
+                count--;
         }
     }
 }
