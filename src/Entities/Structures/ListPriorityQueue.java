@@ -1,7 +1,5 @@
 package Entities.Structures;
 
-import Entities.Structures.Exceptions.DeletionFromEmptyListException;
-
 import java.util.Iterator;
 
 /**
@@ -11,7 +9,7 @@ import java.util.Iterator;
 public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
 
     protected E[] list = null;
-    private E[] sorted = null;
+    protected E[] sorted = null;
     protected int last = 0;
     protected int current = 1;
 
@@ -86,7 +84,7 @@ public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
         return last == 0;
     }
 
-    private Comparable[] sort(Comparable[] vals, int last){
+    Comparable[] sort(Comparable[] vals, int last){
         for(int i = last/2; i >= 1; i--){
             sinkSort(vals, i, last);
         }
@@ -140,13 +138,6 @@ public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
         return list[1];
     }
 
-    /**
-     * Note that this iterator does not provide any
-     * guarantee about the order in which the data
-     * is returned.
-     *
-     * @return the iterator
-     */
     @Override
     public Iterator<E> iterator(){
         sorted = (E[]) sort(this.list.clone(), last);

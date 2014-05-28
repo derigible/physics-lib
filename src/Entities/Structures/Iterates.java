@@ -20,5 +20,10 @@ public interface Iterates<E> extends Iterable<E>, Iterator<E>{
      */
     abstract E peek();
 
+    /**
+     * Get the next data in the structure and delete the data.
+     *
+     * @return the next data
+     */
     abstract E pull();
 }
