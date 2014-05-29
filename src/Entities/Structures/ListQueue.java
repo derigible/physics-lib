@@ -68,6 +68,22 @@ public class ListQueue<E> implements Pushable<E>{
     }
 
     @Override
+    public void remove(E item){
+        if(tail == 0){
+            return;
+        }
+        for(int i = 0; i < tail; i++){
+            if(list[i].equals(item)){
+                for(int j = i; j <  tail -1; j++){
+                    list[j] = list[j +1];
+                }
+                list[tail--] = null;
+                return;
+            }
+        }
+    }
+
+    @Override
     public E peek(){
         return list[head];
     }

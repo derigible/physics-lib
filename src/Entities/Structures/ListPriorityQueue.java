@@ -37,6 +37,32 @@ public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
         return max;
     }
 
+    @Override
+    public void remove(E item){
+        int i = 1;
+        while(i <= last){
+            int cmp = item.compareTo(list[i]);
+            if(cmp > 0){
+                if(less(i *2, i *2 +1)){
+                    i = i * 2 +1;
+                } else {
+                    i = i * 2;
+                }
+            } else if(cmp < 0){
+                if(less(i *2, i *2 +1)){
+                    i = i * 2;
+                } else {
+                    i = i * 2 + 1;
+                }
+            } else {
+                exch(i, last);
+                last--;
+                sink(i);
+                return;
+            }
+        }
+    }
+
     void swim(int key){
         while(key > 1 && less(key / 2, key)){
             exch(key, key / 2);

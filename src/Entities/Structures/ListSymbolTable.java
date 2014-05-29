@@ -237,6 +237,15 @@ public class ListSymbolTable<K extends Comparable<K>, E> implements Map<K,E>{
         return ret.item;
     }
 
+    @Override
+    public void remove(E item){
+        for(MapNode<K,E> node : this.values()){
+            if(node.item().equals(item)){
+                this.pull(node.key());
+            }
+        }
+    }
+
     ListStack<E> vals = null;
 
     @Override

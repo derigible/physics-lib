@@ -27,6 +27,32 @@ public class ListMinPriorityQueue<E extends Comparable<E>> extends ListPriorityQ
     }
 
     @Override
+    public void remove(E item){
+        int i = 1;
+        while(i <= last){
+            int cmp = item.compareTo(list[i]);
+            if(cmp > 0){
+                if(greater(i *2, i *2 +1)){
+                    i = i * 2;
+                } else {
+                    i = i * 2 + 1;
+                }
+            } else if(cmp < 0){
+                if(greater(i *2, i *2 +1)){
+                    i = i * 2 + 1;
+                } else {
+                    i = i * 2;
+                }
+            } else {
+                exch(i, last);
+                last--;
+                sink(i);
+                return;
+            }
+        }
+    }
+
+    @Override
     public void push(E item){
         super.push(item);
         current = last;

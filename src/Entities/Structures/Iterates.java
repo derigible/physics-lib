@@ -26,4 +26,12 @@ public interface Iterates<E> extends Iterable<E>, Iterator<E>{
      * @return the next data
      */
     abstract E pull();
+
+    /**
+     * Remove the specified item. Fails silently if item not
+     * found.
+     *
+     * @param item the item to remove
+     */
+    abstract void remove(E item);
 }

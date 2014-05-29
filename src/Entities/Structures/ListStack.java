@@ -50,6 +50,22 @@ public class ListStack<E> implements Pushable<E>{
         return i;
     }
 
+    @Override
+    public void remove(E item){
+        if(last == -1){
+            return;
+        }
+        for(int i = 0; i < last; i++){
+            if(list[i].equals(item)){
+                for(int j = i; j <  last -1; j++){
+                    list[j] = list[j +1];
+                }
+                list[last--] = null;
+                return;
+            }
+        }
+    }
+
     private void shrinkArray(){
         E[] temp = (E[]) new Object[(int)Math.ceil(list.length * capacity)];
         for(int i = 0; i <= last; i++){
