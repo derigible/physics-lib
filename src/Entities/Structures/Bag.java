@@ -13,8 +13,7 @@ public class Bag<E> implements Pushable<E>{
     private int size = 0;
 
     public void push(E item){
-        Node<E> i = new Node<E>(lastNode, item);
-        lastNode = i;
+        lastNode = new Node<E>(lastNode, item);
         currentNode = lastNode;
         size++;
     }
@@ -31,14 +30,43 @@ public class Bag<E> implements Pushable<E>{
     @Override
     public E pull(){
         Node<E> temp = lastNode;
-        lastNode = lastNode.prv;
+        lastNode = lastNode.next;
         size--;
         return temp.item;
     }
 
     @Override
+    public void remove(E item){
+        Node<E> node = lastNode;
+        Node<E> prv = null;
+        while(node != null){
+            if(node.item.equals(item)){
+                if(node.next != null){
+                    if(prv != null){
+                        prv.next = node.next;
+                    } else {
+                        lastNode = node.next;
+                    }
+                } else {
+                    if(prv != null){
+                        prv.next = null;
+                    } else {
+                        lastNode = null;
+                    }
+                }
+                currentNode = lastNode;
+                size--;
+                return;
+            } else {
+                prv = node;
+                node = node.next;
+            }
+        }
+    }
+
+    @Override
     public boolean hasNext(){
-        if(currentNode.prv == null){
+        if(currentNode == null){
             currentNode = lastNode;
             return false;
         }
@@ -50,8 +78,9 @@ public class Bag<E> implements Pushable<E>{
         if(!hasNext()){
             throw new NoSuchElementException("No More elements.");
         }
-        currentNode = currentNode.prv;
-        return currentNode.item;
+        Node<E> n = currentNode;
+        currentNode = currentNode.next;
+        return n.item;
     }
 
     @Override
@@ -60,12 +89,45 @@ public class Bag<E> implements Pushable<E>{
     }
 
     class Node<E>{
-        Node<E> prv = null;
+        Node<E> next = null;
         E item = null;
 
         Node(Node<E> prv, E item){
-            this.prv = prv;
+            this.next = prv;
             this.item = item;
+        }
+    }
+
+    public static void main(String[] args){
+        Bag<String> b = new Bag<String>();
+        for(int i = 0; i < 10; i++){
+            b.push("Test"+i);
+        }
+        System.out.println(b.size());
+        for(String s : b){
+            System.out.println(s);
+        }
+        b.remove("Test0");
+        System.out.println(b.size());
+        for(String s : b){
+            System.out.println(s);
+        }
+        b.remove("Test5");
+        System.out.println(b.size());
+        for(String s : b){
+            System.out.println(s);
+        }
+        b.push("Test5");
+        b.push("Test5");
+        b.push("Test5");
+        System.out.println(b.size());
+        for(String s : b){
+            System.out.println(s);
+        }
+        b.remove("Test5");
+        System.out.println(b.size());
+        for(String s : b){
+            System.out.println(s);
         }
     }
 }
