@@ -209,7 +209,7 @@ public class ListSymbolTable<K extends Comparable<K>, E> implements Map<K,E>{
 
     @Override
     public Iterable<MapNode<K,E>> values(){
-        ListQueue<MapNode<K,E>> nodes = new ListQueue<MapNode<K,E>>();
+        ListMinPriorityQueue<MapNode<K,E>> nodes = new ListMinPriorityQueue<MapNode<K,E>>();
         for(K key : this.keys()){
             nodes.push(this.getNode(key));
         }

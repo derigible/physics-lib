@@ -57,7 +57,7 @@ public class ListStack<E> implements Pushable<E>{
         }
         for(int i = 0; i < last; i++){
             if(list[i].equals(item)){
-                for(int j = i; j <  last -1; j++){
+                for(int j = i; j < last; j++){
                     list[j] = list[j +1];
                 }
                 list[last--] = null;
@@ -81,7 +81,7 @@ public class ListStack<E> implements Pushable<E>{
      * @return the last item of the list
      */
     public E peek(){
-        return list[last];
+        return last != -1 ? list[last] : null;
     }
 
 
@@ -110,41 +110,75 @@ public class ListStack<E> implements Pushable<E>{
 
     @Override
     public E next(){
-        return list[current++];
+        return current > last ? null : list[current++];
     }
 
     public static void main(String[] args){
         ListStack<Integer> ints = new ListStack<Integer>();
-        for(int i = 0; i < 300; i++){
-            ints.push(i);
-        }
-        System.out.println("Length should be 300, found: " + ints.size());
-        System.out.println();
-        for(int i = 300; i > 0; i-- ){
-            if(i % 20 == 0){
-                System.out.println("Length before pop should be " + (i) + ", found: " + ints.size());
-                System.out.println("Value before pop should be " + (i - 1) + " got " + ints.peek());
-            }
-            int val = ints.pull();
-            if(i % 20 == 0){
-                System.out.println("Value of pop should be " + (i - 1) + " got " + val);
-                System.out.println("Length after pop should be " + (i - 1) + ", found: " + ints.size());
-                System.out.println();
-            }
-        }
-        System.out.println();
-        System.out.println("Should be null: " + ints.pull());
-        System.out.println("Length should be 0, found: " + ints.size());
-        for(int i = 0; i < 301; i++){
-            ints.push(i);
-        }
-        System.out.println("Value should be 300, got "+ ints.peek());
-        int count = 0;
         for(Integer i : ints){
-            if(count %20 == 0){
-                System.out.println("Value should be " + count + " got " + i);
-            }
-            count++;
+            System.out.println(i);
         }
+
+        ints = new ListStack<Integer>();
+        ints.push(60);
+        ints.push(6);
+        ints.push(62);
+        ints.push(63);
+        ints.push(64);
+        ints.push(65);
+        ints.push(66);
+//        ints.push(45);
+//        ints.push(75);
+//        ints.push(55);
+//        ints.push(34);
+        ints.push(67);
+        ints.push(68);
+        ints.push(69);
+        ints.push(93);
+        ints.push(94);
+        ints.push(95);
+        ints.push(96);
+        ints.push(0);
+        ints.push(1);
+        ints.push(2);
+        ints.push(3);
+        ints.push(4);
+        ints.remove(64);
+        System.out.println();
+        for(Integer i : ints){
+            System.out.println("Val:" +i);
+        }
+
+//        for(int i = 0; i < 300; i++){
+//            ints.push(i);
+//        }
+//        System.out.println("Length should be 300, found: " + ints.size());
+//        System.out.println();
+//        for(int i = 300; i > 0; i-- ){
+//            if(i % 20 == 0){
+//                System.out.println("Length before pop should be " + (i) + ", found: " + ints.size());
+//                System.out.println("Value before pop should be " + (i - 1) + " got " + ints.peek());
+//            }
+//            int val = ints.pull();
+//            if(i % 20 == 0){
+//                System.out.println("Value of pop should be " + (i - 1) + " got " + val);
+//                System.out.println("Length after pop should be " + (i - 1) + ", found: " + ints.size());
+//                System.out.println();
+//            }
+//        }
+//        System.out.println();
+//        System.out.println("Should be null: " + ints.pull());
+//        System.out.println("Length should be 0, found: " + ints.size());
+//        for(int i = 0; i < 301; i++){
+//            ints.push(i);
+//        }
+//        System.out.println("Value should be 300, got "+ ints.peek());
+//        int count = 0;
+//        for(Integer i : ints){
+//            if(count %20 == 0){
+//                System.out.println("Value should be " + count + " got " + i);
+//            }
+//            count++;
+//        }
     }
 }

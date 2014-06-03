@@ -10,7 +10,6 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
     private int buckets = 97;
     private int inserts = 0;
     private Node<K,E>[] table = (Node<K,E>[]) new Node[buckets];
-    private ListStack<Integer> pointers = new ListStack<Integer>();
 
     private int hash(K key){
         return (key.hashCode() & 0x7fffffff) % buckets;
@@ -26,11 +25,10 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
             return;
         }
         buckets = i;
-        Node[] temp = new Node[i];
+        Node<K,E>[] temp = (Node<K,E>[])new Node[i];
         for(int j = 0; j < table.length; j++){
-            int hash = hash((K)table[j].key);
+            int hash = hash(table[j].key);
             temp[hash] = table[j];
-            pointers.push(hash);
         }
         this.table = temp;
     }
@@ -45,10 +43,7 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
                 return;
             }
         }
-        if(table[h] == null){
-            pointers.push(h);
-        }
-        table[h] = new Node(key, item, table[h]);
+        table[h] = new Node<K,E>(key, item, table[h]);
         inserts++;
     }
 
@@ -57,9 +52,9 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
         int h = hash(key);
         E val = null;
         Node prv = null;
-        for(Node x = table[h]; x != null; x = x.next){
+        for(Node<K,E> x = table[h]; x != null; x = x.next){
             if(key.equals(x.key)) {
-                val = (E) x.val;
+                val = x.val;
                 if(prv != null){
                     if(x.next ==null){
                         prv.next = null;
@@ -70,7 +65,6 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
                     table[h] = x.next;
                 } else {
                     table[h] = null;
-                    pointers.remove(h);
                 }
                 inserts--;
                 resizeArray();
@@ -85,9 +79,9 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
     public E peek(K key){
         int h = hash(key);
         E val = null;
-        for(Node x = table[h]; x != null; x = x.next){
+        for(Node<K,E> x = table[h]; x != null; x = x.next){
             if(key.equals(x.key)) {
-                val = (E) x.val;
+                val = x.val;
                 break;
             }
         }
@@ -104,25 +98,41 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
         return inserts > 0;
     }
 
+    int mods = 0;
+    ListStack<K> keys = null;
     @Override
     public Iterable<K> keys(){
-        ListStack<K> keys = new ListStack<K>();
-        for(Integer i : pointers){
-            Node x;
-            for(x = table[i]; x != null; x = x.next){
-                keys.push((K)x.key);
+        if(mods == inserts && keys != null) {return keys;}
+        mods = inserts;
+        populateKeys();
+        return keys;
+    }
+
+    private void populateKeys(){
+        keys = new ListStack<K>();
+        for(Node<K,E> i : table){
+            Node<K,E> x;
+            for(x = i; x != null; x = x.next){
+                keys.push(x.key);
             }
         }
-        return keys;
     }
 
     @Override
     public Iterable<MapNode<K, E>> values(){
-        ListQueue<MapNode<K,E>> nodes = new ListQueue<MapNode<K,E>>();
-        for(Integer i : pointers){
-            Node x;
-            for(x = table[i]; x != null; x = x.next){
-                nodes.push(x);
+        if(mods != inserts || keys == null){
+            mods = inserts;
+            populateKeys();
+        }
+        ListMinPriorityQueue<MapNode<K,E>> nodes;
+        nodes = new ListMinPriorityQueue<MapNode<K,E>>();
+        for(K i : keys){
+            int h = hash(i);
+            for(Node<K, E> x = table[h]; x != null; x = x.next){
+                if(i.equals(x.key)){
+                    nodes.push(x);
+                    break;
+                }
             }
         }
         return nodes;
@@ -135,35 +145,32 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
 
     @Override
     public E peek(){
-        return table[pointers.peek()].val;
+        return peek(keys.peek());
     }
 
     @Override
     public E pull(){
-        if(pointers.size() == 0){
-            return null;
+        if(mods != inserts || keys == null){
+            mods = inserts;
+            populateKeys();
         }
-        E val = table[pointers.peek()].val;
-        if(table[pointers.peek()].next != null){
-            table[pointers.peek()] = table[pointers.peek()].next;
-        } else{
-            table[pointers.peek()] = null;
-            pointers.pull();
-        }
-        resizeArray();
-        inserts--;
-        return val;
+        return keys.peek() != null ? pull(keys.pull()) : null;
     }
 
     @Override
     public void remove(E item){
-        if(pointers.size() == 0){
+        if(inserts == 0){
             return;
         }
-        for(Integer i : pointers){
+        if(mods != inserts || keys == null){
+            mods = inserts;
+            populateKeys();
+        }
+        for(K i : keys){
             Node x;
             Node prv = null;
-            for(x = table[i]; x != null; x = x.next){
+            int h = hash(i);
+            for(x = table[h]; x != null; x = x.next){
                 if(x.val.equals(item)){
                     if(prv != null){
                         if(x.next != null){
@@ -172,10 +179,9 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
                             prv.next = null;
                         }
                     } else if(x.next != null){
-                        table[i] = x.next;
+                        table[h] = x.next;
                     } else {
-                        table[i] = null;
-                        pointers.remove(i);
+                        table[h] = null;
                     }
                     inserts--;
                     resizeArray();
@@ -184,42 +190,31 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
                 prv = x;
             }
         }
-
     }
 
-    private Node<K,E> currentNode;
     @Override
     public Iterator<E> iterator(){
-        int i = 0;
-        if(pointers.hasNext()){
-            i = pointers.next();
+        if(mods != inserts || keys == null){
+            mods = inserts;
+            populateKeys();
         }
-        currentNode = table[i];
         return this;
     }
 
     @Override
     public boolean hasNext(){
-        return currentNode.next != null ? true : pointers.hasNext();
+        return inserts != 0 ? keys.hasNext() : false;
     }
 
     @Override
     public E next(){
-        E ret = null;
-        if(currentNode.next != null){
-            currentNode = currentNode.next;
-            ret =  currentNode.item();
-        } else if(pointers.hasNext()){
-            currentNode = table[pointers.next()];
-            ret = currentNode.item();
-        }
-        return ret;
+        return peek(keys.next());
     }
 
-    private static class Node<K,E> extends MapNode<K,E>{
-        private K key;
-        private E val;
-        private Node next;
+    private static class Node<K extends Comparable<K>,E> extends MapNode<K,E>{
+        K key;
+        E val;
+        Node next = null;
 
         Node(K k, E v, Node n){
             key = k;
@@ -240,54 +235,78 @@ public class ListHashTable <K extends Comparable<K>, E> implements Map<K,E>{
 
     public static void main(String[] args){
         ListHashTable<String, String> strings = new ListHashTable<String, String>();
+
+        for(int i = 0; i < 10; i++){
+            strings.push("string" + i, "test " + i);
+        }
+        strings.push("hi3", "testwhatever2");
+        strings.push("hi4", "testwhatever3");
+        strings.push("hi5", "testwhatever4");
+        strings.push("hi", "testwhatever");
+        strings.push("hi2", "testwhatever1");
+        System.out.println("Values: ");
+        for(String s : strings){
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("Keys: ");
+        for(String s : strings.keys()){
+            System.out.println(s);
+        }
+        System.out.println();
+        strings =  new ListHashTable<String, String>();
         strings.push("one", "test1");
-        System.out.println(strings.pull());
-        System.out.println(strings.pull());
-        System.out.println(strings.size());
+        System.out.println("Expected: test1, Result: " + strings.pull());
+        System.out.println("Expected: null, Result: " +strings.pull());
+        System.out.println("Expected: 0, Result: " +strings.size());
         for(int i =0; i < 20; i++){
             strings.push("string" + i, "test " + i);
         }
         System.out.println();
         System.out.println("Expected size: 20, got: " +strings.size());
         System.out.println();
-        System.out.println(strings.pull("string10"));
+        System.out.println("Expected: test 10, Result: " + strings.pull("string10"));
         System.out.println("Expected size: 19, got: " +strings.size());
-        System.out.println(strings.pull("string10"));
-        System.out.println(strings.pull("string15"));
-        System.out.println(strings.pull("string15"));
-        System.out.println("Expected value: test 16 Result: "+ strings.peek());
-        System.out.println(strings.pull("string16"));
-        System.out.println("Expected value: test 17 Result: "+ strings.peek());
-        System.out.println(strings.pull());
-        System.out.println("Expected value: test 18 Result: "+ strings.peek());
-        System.out.println(strings.pull("string7"));
-        System.out.println(strings.pull("string4"));
-        System.out.println(strings.pull("string8"));
-        System.out.println(strings.pull("string9"));
+        System.out.println("Expected: null, Result: " +strings.pull("string10"));
+        System.out.println("Expected: test 15, Result: " +strings.pull("string15"));
+        System.out.println("Expected: null, Result: " +strings.pull("string15"));
+        System.out.println("Expected: test 16, Result: " +strings.pull("string16"));
+        System.out.println("Expected: ? - not null , Result: " +strings.pull());
+        System.out.println("Expected: test 7, Result: " +strings.pull("string7"));
+        System.out.println("Expected: test 4, Result: " +strings.pull("string4"));
+        System.out.println("Expected: test 8, Result: " +strings.pull("string8"));
+        System.out.println("Expected: test 9, Result: " +strings.pull("string9"));
         strings.push("hi", "testwhatever");
+        System.out.println("Added testwhatever");
+        System.out.println("Added testwhatever1");
         strings.push("hi2", "testwhatever1");
 
-        System.out.println(strings.pull("string5"));
-        System.out.println(strings.pull("string6"));
-        System.out.println(strings.pull("string13"));
-        System.out.println(strings.pull("string12"));
+        System.out.println("Expected: test 5, Result: " +strings.pull("string5"));
+        System.out.println("Expected: test 6, Result: " +strings.pull("string6"));
+        System.out.println("Expected: test 13, Result: " +strings.pull("string13"));
+        System.out.println("Expected: test 12, Result: " +strings.pull("string12"));
+        System.out.println("Added testwhatever2");
+        System.out.println("Added testwhatever3");
+        System.out.println("Added testwhatever4");
         strings.push("hi3", "testwhatever2");
         strings.push("hi4", "testwhatever3");
         strings.push("hi5", "testwhatever4");
-        System.out.println(strings.pull("string14"));
-        System.out.println(strings.pull("string1"));
-        System.out.println(strings.pull("string11"));
+        System.out.println("Expected: test 18, Result: " +strings.pull("string18"));
+        System.out.println("Expected: test 1, Result: " +strings.pull("string1"));
+        System.out.println("Expected: test 11, Result: " +strings.pull("string11"));
         System.out.println();
+        System.out.println("Remaining: ");
         for(String s : strings){
             System.out.println(s);
         }
         System.out.println();
         int s = strings.size();
+        System.out.println("Remaining values being pulled: ");
         for(int i = 0; i < s; i++){
             System.out.println(strings.pull());
         }
         System.out.println("Size should be zero: " + strings.size());
-        System.out.println("Empty? : " + strings.isEmpty());
+        System.out.println("Should be empty: " + strings.isEmpty());
     }
 
 }

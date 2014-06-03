@@ -3,7 +3,7 @@ package Entities.Structures;
 /**
  * Created by marcphillips on 5/22/2014.
  */
-public interface Map<K, E> extends Iterates<E>{
+public interface Map<K extends Comparable<K>, E> extends Iterates<E>{
 
     /**
      * Add a key value pair onto the Map.
@@ -61,8 +61,8 @@ public interface Map<K, E> extends Iterates<E>{
     /**
      * Return the key-value pairs of the map as an iterable. This
      * is connected to the Map, and changes made to a MapNode
-     * will be reflected in the Map. The iterable is returned
-     * in order of the keys, least to greatest.
+     * will be reflected in the Map. The iterable returned makes
+     * not declaration on the order of the nodes.
      *
      * @return the iterable of key-value pairs
      */

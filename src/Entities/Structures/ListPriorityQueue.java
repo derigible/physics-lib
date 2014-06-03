@@ -39,24 +39,9 @@ public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
 
     @Override
     public void remove(E item){
-        int i = 1;
-        while(i <= last){
-            int cmp = item.compareTo(list[i]);
-            if(cmp > 0){
-                if(less(i *2, i *2 +1)){
-                    i = i * 2 +1;
-                } else {
-                    i = i * 2;
-                }
-            } else if(cmp < 0){
-                if(less(i *2, i *2 +1)){
-                    i = i * 2;
-                } else {
-                    i = i * 2 + 1;
-                }
-            } else {
-                exch(i, last);
-                last--;
+        for(int i = 1; i <= last; i++){
+            if(item.compareTo(list[i]) == 0){
+                exch(i,last--);
                 sink(i);
                 return;
             }
@@ -199,39 +184,65 @@ public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
 
     public static void main(String[] args){
         ListPriorityQueue<Integer> ints = new ListPriorityQueue<Integer>(50);
-        for(int i = 0; i < 300; i++){
-            ints.push(i);
-        }
-        System.out.println("Length should be 300, found: " + ints.size());
+        ints.push(60);
+        ints.push(6);
+        ints.push(62);
+        ints.push(63);
+        ints.push(64);
+        ints.push(65);
+        ints.push(66);
+        ints.push(67);
+        ints.push(68);
+        ints.push(69);
+        ints.push(93);
+        ints.push(94);
+        ints.push(95);
+        ints.push(96);
+        ints.push(0);
+        ints.push(1);
+        ints.push(2);
+        ints.push(3);
+        ints.push(4);
+        ints.remove(64);
         System.out.println();
-        for(int i = 300; i > 0; i--){
-            if(i % 20 == 0){
-                System.out.println("Length before deleteMax should be " + (i) + ", found: " + ints.size());
-                System.out.println("Value before DeleteMax should be " + (i - 1) + " got " + ints.peek());
-            }
-            int val = 0;
-            val = ints.pull();
-            if(i % 20 == 0){
-                System.out.println("Length after pull should be " + (i - 1) + ", found: " + ints.size());
-                System.out.println("Value of pull should be " + (i - 1) + " got " + val);
-                System.out.println("Peek after pull should be " + (i - 2) + " got " + ints.peek());
-                System.out.println();
-            }
-        }
-        System.out.println();
-        System.out.println("Should be true: " + ints.isEmpty());
-        System.out.println("Should be null: " + ints.pull());
-        System.out.println("Length should be 0, found: " + ints.size());
-        for(int i = 0; i < 301; i++){
-            ints.push(i);
-        }
-        System.out.println("Value should be 300, got "+ ints.peek());
-        int count = 300;
         for(Integer i : ints){
-            if(count %20 == 0){
-                System.out.println("Value should be " + count + " got " + i);
-            }
-                count--;
+            System.out.println("Val: " +i);
         }
+
+//        ints = new ListPriorityQueue<Integer>(50);
+//        for(int i = 0; i < 300; i++){
+//            ints.push(i);
+//        }
+//        System.out.println("Length should be 300, found: " + ints.size());
+//        System.out.println();
+//        for(int i = 300; i > 0; i--){
+//            if(i % 20 == 0){
+//                System.out.println("Length before deleteMax should be " + (i) + ", found: " + ints.size());
+//                System.out.println("Value before DeleteMax should be " + (i - 1) + " got " + ints.peek());
+//            }
+//            int val = 0;
+//            val = ints.pull();
+//            if(i % 20 == 0){
+//                System.out.println("Length after pull should be " + (i - 1) + ", found: " + ints.size());
+//                System.out.println("Value of pull should be " + (i - 1) + " got " + val);
+//                System.out.println("Peek after pull should be " + (i - 2) + " got " + ints.peek());
+//                System.out.println();
+//            }
+//        }
+//        System.out.println();
+//        System.out.println("Should be true: " + ints.isEmpty());
+//        System.out.println("Should be null: " + ints.pull());
+//        System.out.println("Length should be 0, found: " + ints.size());
+//        for(int i = 0; i < 301; i++){
+//            ints.push(i);
+//        }
+//        System.out.println("Value should be 300, got "+ ints.peek());
+//        int count = 300;
+//        for(Integer i : ints){
+//            if(count %20 == 0){
+//                System.out.println("Value should be " + count + " got " + i);
+//            }
+//                count--;
+//        }
     }
 }

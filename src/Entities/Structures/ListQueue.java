@@ -28,7 +28,7 @@ public class ListQueue<E> implements Pushable<E>{
         list[tail++] = item;
     }
 
-    int counted = 0;
+//    int counted = 0;
     private void resizeArray(int i){
         E[] temp = (E[]) new Object[i];
         for(int j = 0; j < tail - head; j++){
@@ -50,6 +50,7 @@ public class ListQueue<E> implements Pushable<E>{
      *
      * @return
      */
+    @Override
     public E pull(){
         E val = null;
         if(head == tail){
@@ -58,7 +59,7 @@ public class ListQueue<E> implements Pushable<E>{
             current = 0;
             return val;
         } else {
-            val = (E) list[head++];
+            val = list[head++];
         }
         if((double)(tail - head)/(double)list.length < capacity && list.length > 10){
             resizeArray(Math.max((int)Math.ceil(list.length * capacity), 10));
