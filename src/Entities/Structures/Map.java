@@ -61,8 +61,8 @@ public interface Map<K extends Comparable<K>, E> extends Iterates<E>{
     /**
      * Return the key-value pairs of the map as an iterable. This
      * is connected to the Map, and changes made to a MapNode
-     * will be reflected in the Map. The iterable returned makes
-     * not declaration on the order of the nodes.
+     * will be reflected in the Map. The iterable returns values
+     * in ascending order according to the Node keys.
      *
      * @return the iterable of key-value pairs
      */

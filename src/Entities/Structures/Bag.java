@@ -1,7 +1,6 @@
 package Entities.Structures;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * Created by marcphillips on 5/19/2014.
@@ -76,7 +75,7 @@ public class Bag<E> implements Pushable<E>{
     @Override
     public E next(){
         if(!hasNext()){
-            throw new NoSuchElementException("No More elements.");
+            return null;
         }
         Node<E> n = currentNode;
         currentNode = currentNode.next;

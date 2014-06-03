@@ -303,54 +303,77 @@ public class ListSymbolTable<K extends Comparable<K>, E> implements Map<K,E>{
 
     public static void main(String[] args){
         ListSymbolTable<String, String> strings = new ListSymbolTable<String, String>();
+        for(int i = 0; i < 10; i++){
+            strings.push("string" + i, "test " + i);
+        }
+        strings.push("hi3", "testwhatever2");
+        strings.push("hi4", "testwhatever3");
+        strings.push("hi5", "testwhatever4");
+        strings.push("hi", "testwhatever");
+        strings.push("hi2", "testwhatever1");
+        System.out.println("Values: ");
+        for(String s : strings){
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("Keys: ");
+        for(String s : strings.keys()){
+            System.out.println(s);
+        }
+        System.out.println();
+        strings = new ListSymbolTable<String, String>();
         strings.push("one", "test1");
-        System.out.println(strings.pull());
-        System.out.println(strings.pull());
-        System.out.println(strings.size());
+        System.out.println("Expected: test1, Result: " + strings.pull());
+        System.out.println("Expected: null, Result: " +strings.pull());
+        System.out.println("Expected: 0, Result: " +strings.size());
         for(int i =0; i < 20; i++){
             strings.push("string" + i, "test " + i);
         }
         System.out.println();
         System.out.println("Expected size: 20, got: " +strings.size());
         System.out.println();
-        System.out.println(strings.pull("string10"));
+        System.out.println("Expected: test 10, Result: " + strings.pull("string10"));
         System.out.println("Expected size: 19, got: " +strings.size());
-        System.out.println(strings.pull("string10"));
-        System.out.println(strings.pull("string15"));
-        System.out.println(strings.pull("string15"));
-        System.out.println("Expected value: test 16 Result: "+ strings.peek());
-        System.out.println(strings.pull("string16"));
-        System.out.println("Expected value: test 17 Result: "+ strings.peek());
-        System.out.println(strings.pull());
-        System.out.println("Expected value: test 18 Result: "+ strings.peek());
-        System.out.println(strings.pull("string7"));
-        System.out.println(strings.pull("string4"));
-        System.out.println(strings.pull("string8"));
-        System.out.println(strings.pull("string9"));
+        System.out.println("Expected: null, Result: " +strings.pull("string10"));
+        System.out.println("Expected: test 15, Result: " +strings.pull("string15"));
+        System.out.println("Expected: null, Result: " +strings.pull("string15"));
+        System.out.println("Expected: test 16, Result: " +strings.pull("string16"));
+        System.out.println("Expected: ? - not null , Result: " +strings.pull());
+        System.out.println("Expected: test 7, Result: " +strings.pull("string7"));
+        System.out.println("Expected: test 4, Result: " +strings.pull("string4"));
+        System.out.println("Expected: test 8, Result: " +strings.pull("string8"));
+        System.out.println("Expected: test 9, Result: " +strings.pull("string9"));
         strings.push("hi", "testwhatever");
+        System.out.println("Added testwhatever");
+        System.out.println("Added testwhatever1");
         strings.push("hi2", "testwhatever1");
 
-        System.out.println(strings.pull("string5"));
-        System.out.println(strings.pull("string6"));
-        System.out.println(strings.pull("string13"));
-        System.out.println(strings.pull("string12"));
+        System.out.println("Expected: test 5, Result: " +strings.pull("string5"));
+        System.out.println("Expected: test 6, Result: " +strings.pull("string6"));
+        System.out.println("Expected: test 13, Result: " +strings.pull("string13"));
+        System.out.println("Expected: test 12, Result: " +strings.pull("string12"));
+        System.out.println("Added testwhatever2");
+        System.out.println("Added testwhatever3");
+        System.out.println("Added testwhatever4");
         strings.push("hi3", "testwhatever2");
         strings.push("hi4", "testwhatever3");
         strings.push("hi5", "testwhatever4");
-        System.out.println(strings.pull("string14"));
-        System.out.println(strings.pull("string1"));
-        System.out.println(strings.pull("string11"));
+        System.out.println("Expected: test 18, Result: " +strings.pull("string18"));
+        System.out.println("Expected: test 1, Result: " +strings.pull("string1"));
+        System.out.println("Expected: test 11, Result: " +strings.pull("string11"));
         System.out.println();
+        System.out.println("Remaining: ");
         for(String s : strings){
             System.out.println(s);
         }
         System.out.println();
         int s = strings.size();
+        System.out.println("Remaining values being pulled: ");
         for(int i = 0; i < s; i++){
             System.out.println(strings.pull());
         }
         System.out.println("Size should be zero: " + strings.size());
-        System.out.println("Empty? : " + strings.isEmpty());
+        System.out.println("Should be empty: " + strings.isEmpty());
     }
 
 }

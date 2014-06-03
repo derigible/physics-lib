@@ -79,7 +79,7 @@ public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
         }
     }
 
-    int counted = 0;
+//    int counted = 0;
     private void resizeArray(int i){
         E[] temp = (E[]) new Comparable[i];
         for(int j = 0; j <= last; j++){
@@ -168,7 +168,7 @@ public class ListPriorityQueue<E extends Comparable<E>> implements Pushable<E>{
 
     @Override
     public E next(){
-        return sorted[current++];
+        return current > last ? null : sorted[current++];
     }
 
     @Override
